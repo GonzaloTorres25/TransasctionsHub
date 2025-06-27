@@ -8,14 +8,14 @@ namespace _011Global.CustomerApi.Controllers
     [Route("api/[controller]")]
     public class CustomersController : ControllerBase
     {
-        private readonly ISubscriptionService _subscriptionService;
-       //private readonly IUSAEpayService _usaepayService;
-       // private readonly IUnsubscritionService _unsubscritionService;
+        private readonly ISubscriptionService _subscriptionService; 
+        private readonly IUnsubscritionService _unsubscritionService;
+        //private readonly IUSAEpayService _usaepayService;
 
-        public CustomersController(ISubscriptionService customerService/*, IUnsubscritionService unsubscritionServer*/)
+        public CustomersController(ISubscriptionService customerService, IUnsubscritionService unsubscritionServer)
         {
             _subscriptionService = customerService;
-            //_unsubscritionService = unsubscritionServer;
+            _unsubscritionService = unsubscritionServer;
         }
 
         /*
@@ -30,13 +30,16 @@ namespace _011Global.CustomerApi.Controllers
         [HttpPost("subscribeCustomer")]
         public async Task<IActionResult> SubscribeCustomer([FromBody] SubscribeRequest request)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var result = await _subscriptionService.SubscribeCustomer(request);
             if (result.Success)
                 return Ok(result);
             return BadRequest(result);
         }
 
-        /*
         [HttpPost("unsubscribe/{customerId}")]
         public async Task<IActionResult> UnsubscribeCustomer(int customerId)
         {
@@ -45,6 +48,5 @@ namespace _011Global.CustomerApi.Controllers
                 return Ok(result);
             return BadRequest(result);
         }
-        */
     }
 }

@@ -6,6 +6,7 @@ using _011Global.Shared.CreditCardsDbContext;
 using _011Global.Shared.CreditCardsDbContext.Intefaces;
 using _011Global.Shared.CustomerContext.Interfaces;
 using _011Global.Shared.CustomerDbContext;
+using _011Global.Shared.Exceptions;
 using _011Global.Shared.JobsServiceDBContext;
 
 namespace _011Global.CustomerApplication.Services
@@ -31,29 +32,8 @@ namespace _011Global.CustomerApplication.Services
 
             try
             {
-                var shipping = new GeneralAddress
-                {
-                    CountryIso2 = request.ShippingAddress.CountryIso2,
-                    StateIso2 = request.ShippingAddress.StateIso2,
-                    City = request.ShippingAddress.City,
-                    ZipCode = request.ShippingAddress.ZipCode,
-                    Address = request.ShippingAddress.AddressLine,
-                    CreationDate = DateTime.UtcNow
-                };
-                await _addressRepository.Add(shipping);
-                await _jobsServiceContext.SaveChangesAsync();
-
-                var billing = new GeneralAddress
-                {
-                    CountryIso2 = request.BillingAddress.CountryIso2,
-                    StateIso2 = request.BillingAddress.StateIso2,
-                    City = request.BillingAddress.City,
-                    ZipCode = request.BillingAddress.ZipCode,
-                    Address = request.BillingAddress.AddressLine,
-                    CreationDate = DateTime.UtcNow
-                };
-                await _addressRepository.Add(billing);
-                await _jobsServiceContext.SaveChangesAsync();
+                var shipping = await GetOrCreateAddress(request.ShippingAddress);
+                var billing = await GetOrCreateAddress(request.BillingAddress);
 
                 var customer = new Customer
                 {
@@ -62,11 +42,11 @@ namespace _011Global.CustomerApplication.Services
                     CustomerLastName = request.LastName,
                     ShippingAddressID = shipping.AddressID,
                     BillingAddressID = billing.AddressID,
-                    MonthlyFee = (decimal)request.PackageAmount,
-                    CreationDate = DateTime.UtcNow
+                    MonthlyFee = request.PackageAmount,
+                    CreationDate = DateTime.UtcNow,
+                    Subscribed = true
                 };
                 await _customerRepository.Add(customer);
-                await _jobsServiceContext.SaveChangesAsync();
 
                 int LastFourNumbers = int.TryParse(
                     request.CreditCard.CreditCardNumber?.Length >= 4
@@ -79,20 +59,28 @@ namespace _011Global.CustomerApplication.Services
                     CustomerId = customer.CustomerId,
                     CreditCardNumber = request.CreditCard.CreditCardNumber,
                     LastFourNumbers = LastFourNumbers,
-                    CardHolder = request.FirstName + " " + request.LastName,
+                    CardHolder = request.CreditCard.CardHolder,
                     SecurityCode = request.CreditCard.SecurityCode,
                     ExpirationMonth = request.CreditCard.Expiration.Month,
                     ExpirationYear = request.CreditCard.Expiration.Year,
                     CreationDate = DateTime.UtcNow
                 };
                 await _creditCardRepository.Add(card);
-                await _jobsServiceContext.SaveChangesAsync();
                 await transaction.CommitAsync();
 
                 return new ServiceResult
                 {
                     Success = true,
                     Message = "Customer subscribed successfully."
+                };
+            }
+            catch (AddDBException ex)
+            {
+                await transaction.RollbackAsync();
+                return new ServiceResult
+                {
+                    Success = false,
+                    Message = ex.Message
                 };
             }
             catch (Exception ex)
@@ -104,6 +92,28 @@ namespace _011Global.CustomerApplication.Services
                     Message = $"Error: {ex.ToString()}"
                 };
             }
+        }
+
+        private async Task<GeneralAddress> GetOrCreateAddress(AddressDto Address)
+        {
+            var existing = await _addressRepository.FindAddressMatch(
+                    Address.CountryIso2, Address.StateIso2, Address.City, Address.ZipCode, Address.AddressLine);
+
+            if (existing == null)
+            {
+                existing = new GeneralAddress
+                {
+                    CountryIso2 = Address.CountryIso2,
+                    StateIso2 = Address.StateIso2,
+                    City = Address.City,
+                    ZipCode = Address.ZipCode,
+                    Address = Address.AddressLine,
+                    CreationDate = DateTime.UtcNow
+                };
+
+                await _addressRepository.Add(existing);
+            }
+            return existing;
         }
     }
 }

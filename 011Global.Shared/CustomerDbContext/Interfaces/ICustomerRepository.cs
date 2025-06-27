@@ -4,7 +4,8 @@ namespace _011Global.Shared.CustomerContext.Interfaces
 {
     public interface ICustomerRepository
     {
-        Task<List<Customer>> GetAll();
         Task Add (Customer customer);
+        Task<Customer?> GetById(int id);      
+        Task Unscuscribe(Customer customer);
     }
 }

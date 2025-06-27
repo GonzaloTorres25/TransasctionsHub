@@ -1,9 +1,4 @@
-﻿using System.Transactions;
-using _011Global.JobsService.JobInterfaces;
-using _011Global.Shared;
-using _011Global.Shared.CustomerContext.Interfaces;
-using _011Global.Shared.TransactionDbContext.Interfaces;
-/*
+﻿/*
  * In Process
 namespace _011Global.JobsService.JobImplementations
 {

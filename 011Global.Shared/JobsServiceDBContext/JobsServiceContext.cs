@@ -20,6 +20,7 @@ public partial class JobsServiceContext : DbContext
     public DbSet<Customer> Global_Customers { get; set; }
     public DbSet<CreditCard> Global_CreditCards { get; set; }
     public DbSet<GeneralAddress> Global_Addresses { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<GlobalJob>(entity =>

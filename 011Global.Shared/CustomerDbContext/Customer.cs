@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace _011Global.Shared.CustomerDbContext
+﻿namespace _011Global.Shared.CustomerDbContext
 {
     public class Customer
     {
@@ -12,5 +10,6 @@ namespace _011Global.Shared.CustomerDbContext
         public int BillingAddressID { get; set; }
         public decimal MonthlyFee { get; set; }
         public DateTime CreationDate { get; set; }
+        public bool Subscribed {  get; set; }
     }
 }

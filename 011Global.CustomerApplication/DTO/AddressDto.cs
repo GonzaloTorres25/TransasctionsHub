@@ -5,8 +5,10 @@ namespace _011Global.CustomerApplication.DTO
     public class AddressDto
     {
         [Required]
+        [StringLength(2, MinimumLength = 2, ErrorMessage = "Country ISO code must be exactly 2 characters.")]
         public string CountryIso2 { get; set; }
         [Required]
+        [StringLength(2, MinimumLength = 2, ErrorMessage = "Country ISO code must be exactly 2 characters.")]
         public string StateIso2 { get; set; }
         [Required]
         public string City { get; set; }
