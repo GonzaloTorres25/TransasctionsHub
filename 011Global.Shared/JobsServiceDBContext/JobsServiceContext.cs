@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using _011Global.Shared.JobsServiceDBContext.Entities;
+using System.Transactions;
+using _011Global.Shared.CustomerDbContext;
+using _011Global.Shared.CreditCardsDbContext;
+using _011Global.Shared.AddressDbContext;
 
 namespace _011Global.Shared.JobsServiceDBContext;
 
@@ -13,7 +17,9 @@ public partial class JobsServiceContext : DbContext
     }
 
     public virtual DbSet<GlobalJob> GlobalJobs { get; set; }
-
+    public DbSet<Customer> Global_Customers { get; set; }
+    public DbSet<CreditCard> Global_CreditCards { get; set; }
+    public DbSet<GeneralAddress> Global_Addresses { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<GlobalJob>(entity =>
