@@ -10,22 +10,12 @@ namespace _011Global.CustomerApi.Controllers
     {
         private readonly ISubscriptionService _subscriptionService; 
         private readonly IUnsubscritionService _unsubscritionService;
-        //private readonly IUSAEpayService _usaepayService;
 
         public CustomersController(ISubscriptionService customerService, IUnsubscritionService unsubscritionServer)
         {
             _subscriptionService = customerService;
             _unsubscritionService = unsubscritionServer;
         }
-
-        /*
-        [HttpGet]
-        public async Task<IActionResult> GetAllCustomers()
-        {
-            var customers = await _subscriptionService.GetCustomers();
-            return Ok(customers);
-        }
-        */
 
         [HttpPost("subscribeCustomer")]
         public async Task<IActionResult> SubscribeCustomer([FromBody] SubscribeRequest request)
@@ -41,9 +31,9 @@ namespace _011Global.CustomerApi.Controllers
         }
 
         [HttpPost("unsubscribe/{customerId}")]
-        public async Task<IActionResult> UnsubscribeCustomer(int customerId)
+        public async Task<IActionResult> UnsubscribeCustomer(string email)
         {
-            var result = await _unsubscritionService.UnsubscribeCustomer(customerId);
+            var result = await _unsubscritionService.UnsubscribeCustomer(email);
             if (result.Success)
                 return Ok(result);
             return BadRequest(result);

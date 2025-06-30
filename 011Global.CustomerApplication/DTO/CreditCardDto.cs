@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using _011Global.Shared.DbContexts.CustomerDbContext;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace _011Global.CustomerApplication.DTO
 {

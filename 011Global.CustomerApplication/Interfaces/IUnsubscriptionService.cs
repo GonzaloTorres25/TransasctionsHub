@@ -4,6 +4,6 @@ namespace _011Global.CustomerApplication.Interfaces
 {
     public interface IUnsubscritionService
     {
-        Task<ServiceResult> UnsubscribeCustomer(int customerId);
+        Task<ServiceResult> UnsubscribeCustomer(string email);
     }
 }

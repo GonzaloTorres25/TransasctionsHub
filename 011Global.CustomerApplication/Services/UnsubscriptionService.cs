@@ -1,6 +1,6 @@
 ﻿using _011Global.CustomerApplication.DTO;
 using _011Global.CustomerApplication.Interfaces;
-using _011Global.Shared.CustomerContext.Interfaces;
+using _011Global.Shared.DbContexts.CustomerDbContext.Interfaces;
 
 namespace _011Global.CustomerApplication.Services
 {
@@ -12,15 +12,15 @@ namespace _011Global.CustomerApplication.Services
             _customerRepository = customerRepository;
         }
 
-        public async Task<ServiceResult> UnsubscribeCustomer(int customerId)
+        public async Task<ServiceResult> UnsubscribeCustomer(string email)
         {
-            var customer = await _customerRepository.GetById(customerId);
+            var customer = await _customerRepository.GetByEmail(email);
             if (customer == null)
             {
                 return new ServiceResult
                 {
                     Success = false,
-                    Message = $"Customer with Id {customerId} not found"
+                    Message = $"Customer with email {email} not found"
                 };
             }
             await _customerRepository.Unscuscribe(customer);

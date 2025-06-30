@@ -2,12 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using _011Global.Shared.JobsServiceDBContext;
 using _011Global.CustomerApplication.Interfaces;
 using _011Global.CustomerApplication.Services;
-using _011Global.Shared.CustomerContext.Interfaces;
-using _011Global.Shared.CustomerContext.Repos;
-using _011Global.Shared.AddressDbContext.Intefaces;
-using _011Global.Shared.AddressDbContext.Repos;
-using _011Global.Shared.CreditCardsDbContext.Intefaces;
-using _011Global.Shared.CreditCardsDbContext.Repos;
+using _011Global.Shared.DbContexts.AddressDbContext.Interfaces;
+using _011Global.Shared.DbContexts.AddressDbContext.Repos;
+using _011Global.Shared.DbContexts.CustomerDbContext.Interfaces;
+using _011Global.Shared.DbContexts.CustomerDbContext.Repos;
+using _011Global.Shared.DbContexts.CreditCardsDbContext.Intefaces;
+using _011Global.Shared.DbContexts.CreditCardsDbContext.Repos;
 
 var builder = WebApplication.CreateBuilder(args);
 

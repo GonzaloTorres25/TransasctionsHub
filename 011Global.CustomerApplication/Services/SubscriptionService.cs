@@ -1,13 +1,13 @@
 ﻿using _011Global.CustomerApplication.DTO;
 using _011Global.CustomerApplication.Interfaces;
-using _011Global.Shared.AddressDbContext;
-using _011Global.Shared.AddressDbContext.Intefaces;
-using _011Global.Shared.CreditCardsDbContext;
-using _011Global.Shared.CreditCardsDbContext.Intefaces;
-using _011Global.Shared.CustomerContext.Interfaces;
-using _011Global.Shared.CustomerDbContext;
+using _011Global.Shared.DbContexts.AddressDbContext;
+using _011Global.Shared.DbContexts.AddressDbContext.Interfaces;
+using _011Global.Shared.DbContexts.CreditCardsDbContext.Intefaces;
+using _011Global.Shared.DbContexts.CustomerDbContext;
+using _011Global.Shared.DbContexts.CustomerDbContext.Interfaces;
 using _011Global.Shared.Exceptions;
 using _011Global.Shared.JobsServiceDBContext;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace _011Global.CustomerApplication.Services
 {
@@ -76,21 +76,12 @@ namespace _011Global.CustomerApplication.Services
             }
             catch (AddDBException ex)
             {
-                await transaction.RollbackAsync();
-                return new ServiceResult
-                {
-                    Success = false,
-                    Message = ex.Message
-                };
+                return await HandleExceptionAsync(transaction, ex.Message);
             }
             catch (Exception ex)
             {
-                await transaction.RollbackAsync();
-                return new ServiceResult
-                {
-                    Success = false,
-                    Message = $"Error: {ex.ToString()}"
-                };
+                var errorMessage = "An unexpected error occurred.";
+                return await HandleExceptionAsync(transaction, errorMessage);
             }
         }
 
@@ -114,6 +105,15 @@ namespace _011Global.CustomerApplication.Services
                 await _addressRepository.Add(existing);
             }
             return existing;
+        }
+        private async Task<ServiceResult> HandleExceptionAsync(IDbContextTransaction transaction, string message)
+        {
+            await transaction.RollbackAsync();
+            return new ServiceResult
+            {
+                Success = false,
+                Message = message
+            };
         }
     }
 }
