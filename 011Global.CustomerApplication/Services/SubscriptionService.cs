@@ -2,6 +2,7 @@
 using _011Global.CustomerApplication.Interfaces;
 using _011Global.Shared.DbContexts.AddressDbContext;
 using _011Global.Shared.DbContexts.AddressDbContext.Interfaces;
+using _011Global.Shared.DbContexts.CreditCardsDbContext;
 using _011Global.Shared.DbContexts.CreditCardsDbContext.Intefaces;
 using _011Global.Shared.DbContexts.CustomerDbContext;
 using _011Global.Shared.DbContexts.CustomerDbContext.Interfaces;
@@ -30,6 +31,15 @@ namespace _011Global.CustomerApplication.Services
         {
             using var transaction = await _jobsServiceContext.Database.BeginTransactionAsync();
 
+            if (request.CreditCard.Expiration < DateTime.Today)
+            {
+                return new ServiceResult
+                {
+                    Success = false,
+                    Message = "credit card expired"
+                };
+            }
+
             try
             {
                 var shipping = await GetOrCreateAddress(request.ShippingAddress);
@@ -48,21 +58,15 @@ namespace _011Global.CustomerApplication.Services
                 };
                 await _customerRepository.Add(customer);
 
-                int LastFourNumbers = int.TryParse(
-                    request.CreditCard.CreditCardNumber?.Length >= 4
-                        ? request.CreditCard.CreditCardNumber[^4..]
-                        : request.CreditCard.CreditCardNumber,
-                    out var val) ? val : 0;
-
                 var card = new CreditCard
                 {
                     CustomerId = customer.CustomerId,
                     CreditCardNumber = request.CreditCard.CreditCardNumber,
-                    LastFourNumbers = LastFourNumbers,
+                    LastFourNumbers = request.CreditCard.CreditCardNumber[^4..],
                     CardHolder = request.CreditCard.CardHolder,
                     SecurityCode = request.CreditCard.SecurityCode,
-                    ExpirationMonth = request.CreditCard.Expiration.Month,
-                    ExpirationYear = request.CreditCard.Expiration.Year,
+                    ExpirationMonth = request.CreditCard.Expiration.Month.ToString("D2"),
+                    ExpirationYear = request.CreditCard.Expiration.Year.ToString(),
                     CreationDate = DateTime.UtcNow
                 };
                 await _creditCardRepository.Add(card);

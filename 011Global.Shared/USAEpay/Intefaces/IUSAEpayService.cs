@@ -6,6 +6,6 @@ namespace _011Global.JobsService.JobInterfaces
 {
     public interface IUSAEpayService
     {
-        Task<PaymentResult> ChargeAsync(Customer customer, CreditCard creditCard);
+        Task<PaymentResult> Charge(Customer customer, CreditCard creditCard);
     }
 }

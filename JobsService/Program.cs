@@ -1,6 +1,7 @@
 using _011Global.JobsService.JobInterfaces;
 using _011Global.JobsService;
 using _011Global.Shared;
+using _011Global.JobsService.Entities;
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((hostingContext, configBuilder) =>
@@ -17,6 +18,8 @@ IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((hostContext, services) =>
     {
         var connString = hostContext.Configuration.GetConnectionString("TransactionsHubDB");
+        services.Configure<USAEpaySettings>(hostContext.Configuration.GetSection("USAEpaySettings"));
+
         services.AddSingleton<CancellationTokenSource>(_ => new CancellationTokenSource())
                 .AddTransient<CancellationTokenBase, WorkerCancellationToken>()
                 .RegisterDBContexts(connString)

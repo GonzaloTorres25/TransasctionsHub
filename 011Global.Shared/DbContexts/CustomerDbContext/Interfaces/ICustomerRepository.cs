@@ -7,6 +7,6 @@ namespace _011Global.Shared.DbContexts.CustomerDbContext.Interfaces
         Task<Customer?> GetByEmail(string email);
         Task Add(Customer customer);
         Task Unscuscribe(Customer customer);
-        Task<List<Customer>> GetAll();
+        Task<List<Customer>> GetAllSuscribedClient();
     }
 }

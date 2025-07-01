@@ -1,14 +1,21 @@
 ﻿
+using System.Text.Json.Serialization;
+
 namespace _011Global.Shared.IUSAEpay
 {
     public class PaymentResult
     {
-        public bool Success { get; set; }            
-        public string TransactionId { get; set; }   
-        public string ResponseCode { get; set; }    
-        public string ErrorMessage { get; set; }     
-        public string SubErrorDesc1 { get; set; }    
-        public string SubErrorDesc2 { get; set; }
-        public string SubErrorDesc3 { get; set; }
+        [JsonPropertyName("key")]
+        public string key {  get; set; }
+        [JsonPropertyName("refnum")]
+        public string refnum { get; set; }
+        [JsonPropertyName("authcode")]
+        public string authcode { get; set; }
+        [JsonPropertyName("auth_amount")]
+        public string auth_amount { get; set; }
+        [JsonPropertyName("result")]
+        public string result {  get; set; }
+        [JsonPropertyName("error")]
+        public string? error { get; set; }
     }
 }

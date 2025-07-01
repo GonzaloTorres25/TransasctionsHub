@@ -1,5 +1,4 @@
 ﻿using _011Global.Shared.DbContexts.TransactionDbContext.Interfaces;
-using _011Global.Shared.IUSAEpay;
 using _011Global.Shared.JobsServiceDBContext;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,12 +14,13 @@ namespace _011Global.Shared.DbContexts.TransactionDbContext.Repos
 
         public async Task<Transaction?> GetLastVerificationRequiredTransactionByCustomerId(int customerId)
         {
-            return await _context.Global_Transactions.Where(t => t.CustomerID == customerId && t.TransactionStatus == 5).OrderByDescending(t => t.CreationDate).FirstOrDefaultAsync();
+            return await _context.Global_Transactions.Where(t => t.CustomerID == customerId).FirstOrDefaultAsync();
         }
 
-        public Task SaveTransaction(PaymentResult paymentResult)
+        public async Task SaveTransaction(Transaction transaction)
         {
-            throw new NotImplementedException();
+            _context.Global_Transactions.Add(transaction);
+            await _context.SaveChangesAsync();
         }
     }
 }

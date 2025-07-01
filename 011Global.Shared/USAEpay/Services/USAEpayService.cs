@@ -22,15 +22,14 @@ namespace _011Global.JobsService.Services
             _settings = options.Value;
         }
 
-        public async Task<PaymentResult> ChargeAsync(Customer customer, CreditCard creditCard)
+        public async Task<PaymentResult> Charge(Customer customer, CreditCard creditCard)
         {
             var authHeader = GenerateAuthorizationHeader();
+            var sendRequest = BuildPaymentRequest(customer, creditCard);
 
-            var usaepayRequest = BuildPaymentRequest(customer, creditCard);
-
-            var request = new HttpRequestMessage(HttpMethod.Post, "/api/payment")
+            var request = new HttpRequestMessage(HttpMethod.Post, "transactions")
             {
-                Content = JsonContent.Create(usaepayRequest)
+                Content = JsonContent.Create(sendRequest)
             };
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic", authHeader);
@@ -47,12 +46,11 @@ namespace _011Global.JobsService.Services
         {
             return new USAEpayRequest
             {
-                Command = "sale",
-                Amount = customer.MonthlyFee,
-                CreditCard = new CreditCardDTO
+                amount = (decimal)customer.MonthlyFee,
+                creditcard = new CreditCardDTO
                 {
-                    Number = creditCard.CreditCardNumber,
-                    Expiration = $"{creditCard.ExpirationMonth}{creditCard.ExpirationYear}"
+                    number = creditCard.CreditCardNumber,
+                    expiration = $"{creditCard.ExpirationMonth.PadLeft(2, '0')}{creditCard.ExpirationYear[^2..]}"
                 }
             };
         }
@@ -62,7 +60,7 @@ namespace _011Global.JobsService.Services
             string seed = GenerateRandomSeed(); 
             string apiKey = _settings.ApiKey;
             string apiPin = _settings.ApiPin;
-            string prehash = _settings.ApiKey + seed + _settings.ApiPin;
+            string prehash = apiKey + seed + apiPin;
             string hash = ComputeSha256Hash(prehash);
             string apiHash = $"s2/{seed}/{hash}";
             string rawAuth = $"{apiKey}:{apiHash}";

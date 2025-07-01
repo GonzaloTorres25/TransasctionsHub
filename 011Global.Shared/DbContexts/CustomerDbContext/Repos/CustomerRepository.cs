@@ -29,9 +29,9 @@ namespace _011Global.Shared.DbContexts.CustomerDbContext.Repos
             }
         }
 
-        public async Task<List<Customer>> GetAll()
+        public Task<List<Customer>> GetAllSuscribedClient()
         {
-            return await _context.Global_Customers.ToListAsync();
+            return _context.Global_Customers.Where(c => c.Subscribed).ToListAsync();
         }
 
         public async Task<Customer?> GetByEmail(string email)

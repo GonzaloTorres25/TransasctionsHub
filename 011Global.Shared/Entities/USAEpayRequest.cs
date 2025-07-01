@@ -2,8 +2,8 @@
 {
     public class USAEpayRequest
     {
-        public string Command { get; set; } = "sale";
-        public decimal Amount { get; set; }
-        public CreditCardDTO CreditCard { get; set; } = null!;
+        public string command { get; set; } = "sale";
+        public decimal amount { get; set; }
+        public CreditCardDTO creditcard { get; set; } =  new CreditCardDTO();
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using _011Global.Shared.JobsServiceDBContext.Entities;
+﻿using Microsoft.EntityFrameworkCore;
 using _011Global.Shared.DbContexts.AddressDbContext;
 using _011Global.Shared.DbContexts.CustomerDbContext;
 using _011Global.Shared.DbContexts.CreditCardsDbContext;
