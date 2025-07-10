@@ -24,20 +24,27 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<JobsServiceContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
-builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
-builder.Services.AddScoped<IAddressRepository, AddressRepository>();
-builder.Services.AddScoped<ICreditCardRepository, CreditCardRepository>();
-builder.Services.AddScoped<IUnsubscritionService, UnsubscriptionService>();
-builder.Services.AddScoped<IAutorizationService, AutorizationService>();
 
+
+builder.Services.AddScoped<IAutorizationService, AutorizationService>();
+builder.Services.Configure<USAEpaySettings>(
+    builder.Configuration.GetSection("USAEpaySettings"));
 builder.Services.AddHttpClient<ITokenizationService, TokenizationService>(client =>
 {
     client.BaseAddress = new Uri("https://sandbox.usaepay.com/api/v2/");
 });
 
-builder.Services.Configure<USAEpaySettings>(
-    builder.Configuration.GetSection("USAEpaySettings"));
+
+builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+builder.Services.AddScoped<IUnsubscritionService, UnsubscriptionService>();
+
+
+builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+builder.Services.AddScoped<IAddressRepository, AddressRepository>();
+builder.Services.AddScoped<ICreditCardRepository, CreditCardRepository>();
+
+
+
 
 var app = builder.Build();
 

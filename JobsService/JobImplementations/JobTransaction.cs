@@ -5,6 +5,7 @@ using _011Global.Shared.DbContexts.CreditCardsDbContext.Intefaces;
 using _011Global.Shared.DbContexts.CustomerDbContext.Interfaces;
 using _011Global.Shared.DbContexts.TransactionDbContext;
 using _011Global.Shared.DbContexts.TransactionDbContext.Interfaces;
+using _011Global.Shared.USAEpay.Intefaces;
 
 namespace _011Global.JobsService.JobImplementations
 {
@@ -27,6 +28,7 @@ namespace _011Global.JobsService.JobImplementations
             var transactionRepository = scope.ServiceProvider.GetRequiredService<ITransactionRepository>();
             var creditCardRepository = scope.ServiceProvider.GetRequiredService<ICreditCardRepository>();
             var paymentService = scope.ServiceProvider.GetRequiredService<ITransactionService>();
+            var tokenizationService = scope.ServiceProvider.GetRequiredService<ITokenizationService>();
 
             var customers = await customerRepository.GetAllSuscribedClient();
 
@@ -54,6 +56,11 @@ namespace _011Global.JobsService.JobImplementations
                     try
                     {
                         var creditCard = creditCardRepository.getByCustomerId(customer.CustomerId);
+                        if (IsPotentialCardNumber(creditCard.Token))
+                        {
+                            var TokenizedCreditCard = await tokenizationService.TokenizationCard(creditCard.Token, new DateTime(int.Parse(creditCard.ExpirationYear), int.Parse(creditCard.ExpirationMonth), 1));
+                            await creditCardRepository.UpdateCreditCardToken(creditCard.CreditCardId, TokenizedCreditCard);
+                        }
                         var paymentResult = await paymentService.Charge(customer, creditCard);
 
                         var transaction = new Transaction
@@ -81,6 +88,17 @@ namespace _011Global.JobsService.JobImplementations
                     }
                 }
             }
+        }
+
+        private bool IsPotentialCardNumber(string token)
+        {
+            if (!token.All(char.IsDigit))
+                return false;
+
+            if (token.Length < 13 || token.Length > 19)
+                return false;
+
+            return true;
         }
 
         private byte VerificationStatus(string result)

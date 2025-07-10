@@ -27,6 +27,11 @@ namespace _011Global.Shared
             _services.AddScoped<ICustomerRepository, CustomerRepository>();
             _services.AddScoped<ITransactionRepository, TransactionRepository>();
             _services.AddScoped<ICreditCardRepository, CreditCardRepository>();
+            _services.AddScoped<ITokenizationService, TokenizationService>();
+            _services.AddHttpClient<ITokenizationService, TokenizationService>(client =>
+            {
+                client.BaseAddress = new Uri("https://sandbox.usaepay.com/api/v2/");
+            });
 
             _services.AddScoped<IAutorizationService, AutorizationService>();
 
