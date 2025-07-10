@@ -1,4 +1,4 @@
-﻿using _011Global.CustomerApplication.DTO;
+﻿using _011Global.CustomerApplication.Common;
 using _011Global.CustomerApplication.Interfaces;
 using _011Global.Shared.DbContexts.CustomerDbContext.Interfaces;
 
@@ -14,22 +14,21 @@ namespace _011Global.CustomerApplication.Services
 
         public async Task<ServiceResult> UnsubscribeCustomer(string email)
         {
-            var customer = await _customerRepository.GetByEmail(email);
-            if (customer == null)
-            {
-                return new ServiceResult
-                {
-                    Success = false,
-                    Message = $"Customer with email {email} not found"
-                };
-            }
-            await _customerRepository.Unscuscribe(customer);
-
-            return new ServiceResult
+            ServiceResult serviceresult = new ServiceResult
             {
                 Success = true,
                 Message = "Customer unsubscribe successfully"
             };
+            var customer = await _customerRepository.GetByEmail(email); 
+            if (customer == null)
+            {
+                serviceresult.Success = false;
+                serviceresult.Message = $"Customer with email {email} not found";
+            }else
+            {
+                await _customerRepository.Unsubscribe(customer);
+            }
+            return serviceresult;
         }
     }
 }

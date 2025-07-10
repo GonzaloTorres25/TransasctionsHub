@@ -19,7 +19,6 @@ IHost host = Host.CreateDefaultBuilder(args)
     {
         var connString = hostContext.Configuration.GetConnectionString("TransactionsHubDB");
         services.Configure<USAEpaySettings>(hostContext.Configuration.GetSection("USAEpaySettings"));
-
         services.AddSingleton<CancellationTokenSource>(_ => new CancellationTokenSource())
                 .AddTransient<CancellationTokenBase, WorkerCancellationToken>()
                 .RegisterDBContexts(connString)

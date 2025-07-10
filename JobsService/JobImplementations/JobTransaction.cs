@@ -26,7 +26,7 @@ namespace _011Global.JobsService.JobImplementations
             var customerRepository = scope.ServiceProvider.GetRequiredService<ICustomerRepository>();
             var transactionRepository = scope.ServiceProvider.GetRequiredService<ITransactionRepository>();
             var creditCardRepository = scope.ServiceProvider.GetRequiredService<ICreditCardRepository>();
-            var paymentService = scope.ServiceProvider.GetRequiredService<IUSAEpayService>();
+            var paymentService = scope.ServiceProvider.GetRequiredService<ITransactionService>();
 
             var customers = await customerRepository.GetAllSuscribedClient();
 
@@ -83,7 +83,7 @@ namespace _011Global.JobsService.JobImplementations
             }
         }
 
-        private byte VerificationStatus(string result) //Verify
+        private byte VerificationStatus(string result)
         {
             if (string.IsNullOrWhiteSpace(result))
             {

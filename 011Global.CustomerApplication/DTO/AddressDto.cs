@@ -10,11 +10,11 @@ namespace _011Global.CustomerApplication.DTO
         [Required]
         [StringLength(2, MinimumLength = 2, ErrorMessage = "Country ISO code must be exactly 2 characters.")]
         public string StateIso2 { get; set; }
-        [Required]
+        [Required(ErrorMessage = "City is required")]
         public string City { get; set; }
-        [Required]
+        [Required(ErrorMessage = "ZipCode is required")]
         public string ZipCode { get; set; }
-        [Required]
+        [Required(ErrorMessage = "AddressLine is required")]
         public string AddressLine { get; set; }
     }
 }

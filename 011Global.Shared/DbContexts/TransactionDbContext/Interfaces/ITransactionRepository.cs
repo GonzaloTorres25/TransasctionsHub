@@ -1,4 +1,4 @@
-﻿using _011Global.Shared.IUSAEpay;
+﻿using Microsoft.EntityFrameworkCore.Storage;
 
 namespace _011Global.Shared.DbContexts.TransactionDbContext.Interfaces
 {
@@ -6,5 +6,7 @@ namespace _011Global.Shared.DbContexts.TransactionDbContext.Interfaces
     {
         Task<Transaction?> GetLastVerificationRequiredTransactionByCustomerId(int customerId);
         Task SaveTransaction(Transaction transaction);
+
+        Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

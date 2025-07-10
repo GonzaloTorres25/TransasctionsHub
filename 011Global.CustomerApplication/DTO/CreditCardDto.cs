@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using _011Global.Shared.DbContexts.CustomerDbContext;
-using static System.Runtime.InteropServices.JavaScript.JSType;
+using _011Global.CustomerApplication.Common;
 
 namespace _011Global.CustomerApplication.DTO
 {
@@ -9,13 +8,11 @@ namespace _011Global.CustomerApplication.DTO
         [Required]
         [CreditCard(ErrorMessage = "Invalid credit card number.")]
         public string CreditCardNumber { get; set; }
-        [Required]
-        [RegularExpression(@"^\d{3,4}$", ErrorMessage = "Security code must be 3 or 4 digits.")]
-        public string SecurityCode { get; set; }
-        [Required]
+        [Required(ErrorMessage = "`Card holder is required")]
         public string CardHolder {get; set;}
-        [Required]
+        [Required(ErrorMessage = "Expiration date is required.")]
         [DataType(DataType.Date)]
+        [FutureDate(ErrorMessage = "The credit card is expired.")]
         public DateTime Expiration { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace _011Global.CustomerApplication.DTO
+﻿namespace _011Global.CustomerApplication.Common
 {
     public class ServiceResult
     {

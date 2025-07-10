@@ -1,17 +1,19 @@
-﻿using _011Global.Shared.DbContexts.AddressDbContext;
-using _011Global.Shared.DbContexts.AddressDbContext.Interfaces;
+﻿using _011Global.Shared.DbContexts.AddressDbContext.Interfaces;
 using _011Global.Shared.Exceptions;
 using _011Global.Shared.JobsServiceDBContext;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace _011Global.Shared.DbContexts.AddressDbContext.Repos
 {
     public class AddressRepository : IAddressRepository
     {
         private readonly JobsServiceContext _context;
-        public AddressRepository(JobsServiceContext context)
+        private readonly ILogger<AddressRepository> _logger;
+        public AddressRepository(JobsServiceContext context, ILogger<AddressRepository> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
         public async Task Add(GeneralAddress address)
@@ -23,7 +25,8 @@ namespace _011Global.Shared.DbContexts.AddressDbContext.Repos
             }
             catch (Exception ex)
             {
-                throw new AddDBException("The address could not be saved", ex);
+                _logger.LogError(ex, "Error saving address {@Address}", address);
+                throw new AddDBException("The address could not be saved ", ex);
             }
         }
 

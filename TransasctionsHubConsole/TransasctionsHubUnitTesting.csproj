@@ -7,6 +7,7 @@
 
     <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <UserSecretsId>a061bfd0-3224-4a52-b3ed-f179b86ea6e9</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -23,6 +24,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\011Global.CustomerApi\011Global.CustomerAPI.csproj" />
+    <ProjectReference Include="..\011Global.CustomerApplication\011Global.CustomerApplication.csproj" />
     <ProjectReference Include="..\011Global.Shared\011Global.Shared.csproj" />
     <ProjectReference Include="..\JobsService\011Global.JobsService.csproj" />
   </ItemGroup>

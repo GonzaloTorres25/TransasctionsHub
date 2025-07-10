@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace _011Global.Shared.JobsServiceDBContext.Entities;
+﻿namespace _011Global.Shared.JobsServiceDBContext.Entities;
 
 public partial class GlobalJob
 {

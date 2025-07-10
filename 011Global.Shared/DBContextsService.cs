@@ -9,6 +9,8 @@ using _011Global.Shared.DbContexts.TransactionDbContext.Repos;
 using _011Global.Shared.JobsServiceDBContext;
 using _011Global.Shared.JobsServiceDBContext.Interfaces;
 using _011Global.Shared.JobsServiceDBContext.Repos;
+using _011Global.Shared.USAEpay.Intefaces;
+using _011Global.Shared.USAEpay.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,7 +28,9 @@ namespace _011Global.Shared
             _services.AddScoped<ITransactionRepository, TransactionRepository>();
             _services.AddScoped<ICreditCardRepository, CreditCardRepository>();
 
-            _services.AddHttpClient<IUSAEpayService, USAEpayService>(client =>
+            _services.AddScoped<IAutorizationService, AutorizationService>();
+
+            _services.AddHttpClient<ITransactionService, TransactionService>(client =>
             {
                 client.BaseAddress = new Uri("https://sandbox.usaepay.com/api/v2/");
             });

@@ -1,4 +1,5 @@
-﻿using _011Global.CustomerApplication.DTO;
+﻿using _011Global.CustomerApplication.Common;
+using _011Global.CustomerApplication.DTO;
 
 namespace _011Global.CustomerApplication.Interfaces
 {

@@ -1,4 +1,5 @@
-﻿using _011Global.CustomerApplication.DTO;
+﻿using _011Global.CustomerApplication.Common;
+using _011Global.CustomerApplication.DTO;
 using _011Global.CustomerApplication.Interfaces;
 using _011Global.Shared.DbContexts.AddressDbContext;
 using _011Global.Shared.DbContexts.AddressDbContext.Interfaces;
@@ -7,7 +8,7 @@ using _011Global.Shared.DbContexts.CreditCardsDbContext.Intefaces;
 using _011Global.Shared.DbContexts.CustomerDbContext;
 using _011Global.Shared.DbContexts.CustomerDbContext.Interfaces;
 using _011Global.Shared.Exceptions;
-using _011Global.Shared.JobsServiceDBContext;
+using _011Global.Shared.USAEpay.Intefaces;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace _011Global.CustomerApplication.Services
@@ -17,29 +18,20 @@ namespace _011Global.CustomerApplication.Services
         private readonly ICustomerRepository _customerRepository;
         private readonly IAddressRepository _addressRepository;
         private readonly ICreditCardRepository _creditCardRepository;
-        private readonly JobsServiceContext _jobsServiceContext;
+        private readonly ITokenizationService _tokenizationService;
 
-        public SubscriptionService(JobsServiceContext jobsServiceContext, ICustomerRepository customerRepository, IAddressRepository addressRepository, ICreditCardRepository creditCardRepository)
+        public SubscriptionService(ICustomerRepository customerRepository, IAddressRepository addressRepository, ICreditCardRepository creditCardRepository, ITokenizationService tokenizationService)
         {
             _customerRepository = customerRepository;
             _addressRepository = addressRepository;
             _creditCardRepository = creditCardRepository;
-            _jobsServiceContext = jobsServiceContext;
+            _tokenizationService = tokenizationService;
         }
 
         public async Task<ServiceResult> SubscribeCustomer(SubscribeRequest request)
-        {
-            using var transaction = await _jobsServiceContext.Database.BeginTransactionAsync();
-
-            if (request.CreditCard.Expiration < DateTime.Today)
-            {
-                return new ServiceResult
-                {
-                    Success = false,
-                    Message = "credit card expired"
-                };
-            }
-
+        { 
+            //Starts a database transaction to ensure all operations succeed or all are rolled back in case of failure
+            using var transaction = await _customerRepository.BeginTransactionDbAsync();
             try
             {
                 var shipping = await GetOrCreateAddress(request.ShippingAddress);
@@ -58,13 +50,13 @@ namespace _011Global.CustomerApplication.Services
                 };
                 await _customerRepository.Add(customer);
 
+                var token = await _tokenizationService.TokenizationCard(request.CreditCard.CreditCardNumber, request.CreditCard.Expiration);
                 var card = new CreditCard
                 {
                     CustomerId = customer.CustomerId,
-                    CreditCardNumber = request.CreditCard.CreditCardNumber,
+                    Token = token,
                     LastFourNumbers = request.CreditCard.CreditCardNumber[^4..],
                     CardHolder = request.CreditCard.CardHolder,
-                    SecurityCode = request.CreditCard.SecurityCode,
                     ExpirationMonth = request.CreditCard.Expiration.Month.ToString("D2"),
                     ExpirationYear = request.CreditCard.Expiration.Year.ToString(),
                     CreationDate = DateTime.UtcNow
@@ -85,7 +77,7 @@ namespace _011Global.CustomerApplication.Services
             catch (Exception ex)
             {
                 var errorMessage = "An unexpected error occurred.";
-                return await HandleExceptionAsync(transaction, errorMessage);
+                return await HandleExceptionAsync(transaction, errorMessage + "error:" + ex);
             }
         }
 

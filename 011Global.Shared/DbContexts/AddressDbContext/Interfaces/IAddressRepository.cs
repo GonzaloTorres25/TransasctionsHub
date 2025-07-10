@@ -1,6 +1,4 @@
-﻿using _011Global.Shared.DbContexts.AddressDbContext;
-
-namespace _011Global.Shared.DbContexts.AddressDbContext.Interfaces
+﻿namespace _011Global.Shared.DbContexts.AddressDbContext.Interfaces
 {
     public interface IAddressRepository
     {

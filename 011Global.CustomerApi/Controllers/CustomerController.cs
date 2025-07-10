@@ -20,10 +20,6 @@ namespace _011Global.CustomerApi.Controllers
         [HttpPost("subscribeCustomer")]
         public async Task<IActionResult> SubscribeCustomer([FromBody] SubscribeRequest request)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
             var result = await _subscriptionService.SubscribeCustomer(request);
             if (result.Success)
                 return Ok(result);
