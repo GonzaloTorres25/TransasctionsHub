@@ -13,8 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "011Global.CustomerAPI", "01
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "011Global.CustomerApplication", "011Global.CustomerApplication\011Global.CustomerApplication.csproj", "{605B0C21-FDF9-40E2-B0B3-F44E068DA57D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UpdatingCreditCardToken", "UpdatingCreditCardToken\UpdatingCreditCardToken.csproj", "{92B4DC14-D30A-49D0-B307-A635C5540245}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,10 +39,6 @@ Global
 		{605B0C21-FDF9-40E2-B0B3-F44E068DA57D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{605B0C21-FDF9-40E2-B0B3-F44E068DA57D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{605B0C21-FDF9-40E2-B0B3-F44E068DA57D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{92B4DC14-D30A-49D0-B307-A635C5540245}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92B4DC14-D30A-49D0-B307-A635C5540245}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{92B4DC14-D30A-49D0-B307-A635C5540245}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{92B4DC14-D30A-49D0-B307-A635C5540245}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using _011Global.JobsService.Entities;
+using _011Global.JobsService.JobInterfaces;
 using _011Global.JobsService.Services;
 using _011Global.Shared.DbContexts.CreditCardsDbContext;
 using _011Global.Shared.DbContexts.CustomerDbContext;
@@ -13,8 +14,7 @@ namespace TransasctionsHubUnitTesting
     {
         private AutorizationService _authorizationService;
         private HttpClient _httpClient;
-        private TokenizationService _tokenizationService;
-        private TransactionService _transactionService;
+        private ITransactionService _transactionService;
         private readonly USAEpaySettings settings;
 
         public USAEpayTest()
@@ -35,7 +35,6 @@ namespace TransasctionsHubUnitTesting
                 BaseAddress = new Uri("https://sandbox.usaepay.com/api/v2/")
             };
 
-            _tokenizationService = new TokenizationService(_httpClient, _authorizationService);
             _transactionService = new TransactionService(_httpClient, _authorizationService);
         }
 
@@ -62,39 +61,82 @@ namespace TransasctionsHubUnitTesting
         }
 
         [Fact]
-        public async Task TokenizationCard_ReturnsToken_WhenResponseIsSuccessful()
-        {
-            var creditCardNumber = "4111111111111111";
-            var expiration = DateTime.UtcNow.AddYears(1);
-
-            var token = await _tokenizationService.TokenizationCard(creditCardNumber, expiration);
-
-            Assert.False(string.IsNullOrWhiteSpace(token));
-        }
-
-        [Fact]
         public async Task Charge_ReturnsPaymentResult_WhenSuccessful()
         {
-            var creditCardNumber = "4111111111111111";
-            var expiration = DateTime.UtcNow.AddYears(1);
-
-            var token = await _tokenizationService.TokenizationCard(creditCardNumber, expiration);
-            Assert.False(string.IsNullOrWhiteSpace(token));
-
             var customer = new Customer
             {
-                CustomerId = 123,
+                CustomerId = 1,
                 MonthlyFee = 10
             };
 
             var creditCard = new CreditCard
             {
-                Token = token
+                CreditCardNumber = "4111111111111111",
+                ExpirationMonth = "03",
+                ExpirationYear = "2027"
             };
 
-            var result = await _transactionService.Charge(customer, creditCard);
+            var resultWithSave = await _transactionService.Charge(customer, creditCard, true);
+            Assert.NotNull(resultWithSave);
+            Assert.False(string.IsNullOrEmpty(resultWithSave.key));
+            Assert.False(string.IsNullOrEmpty(resultWithSave.refnum));
+            Assert.False(string.IsNullOrEmpty(resultWithSave.authcode));
+            Assert.False(string.IsNullOrEmpty(resultWithSave.auth_amount));
+            Assert.Equal("Approved", resultWithSave.result);
+            Assert.Null(resultWithSave.error);
+            Assert.False(string.IsNullOrWhiteSpace(resultWithSave.savedCard.key));
+            Assert.False(string.IsNullOrWhiteSpace(resultWithSave.savedCard.type));
+            Assert.False(string.IsNullOrWhiteSpace(resultWithSave.savedCard.cardnumber));
+
+            var resultWithoutSave = await _transactionService.Charge(customer, creditCard, false);
+            Assert.NotNull(resultWithoutSave);
+            Assert.False(string.IsNullOrEmpty(resultWithoutSave.key));
+            Assert.False(string.IsNullOrEmpty(resultWithoutSave.refnum));
+            Assert.False(string.IsNullOrEmpty(resultWithoutSave.authcode));
+            Assert.False(string.IsNullOrEmpty(resultWithoutSave.auth_amount));
+            Assert.Equal("Approved", resultWithoutSave.result);
+            Assert.Null(resultWithoutSave.error);
+            Assert.Null(resultWithoutSave.savedCard);
+        }
+
+        [Fact]
+        public async Task Charge_ReturnsPaymentsResult_WhenFail()
+        {
+            var customer = new Customer
+            {
+                CustomerId = 1,
+                MonthlyFee = 10
+            };
+
+            var invalidCardNumber = new CreditCard
+            {
+                CreditCardNumber = "4000000000000002",
+                ExpirationMonth = "13",
+                ExpirationYear = "2027"
+            };
+
+            var invalidCardExpiration = new CreditCard
+            {
+                CreditCardNumber = "4111111111111111",
+                ExpirationMonth = "01",
+                ExpirationYear = "2027"
+            };
+
+            var result = await _transactionService.Charge(customer, invalidCardNumber,  true);
             Assert.NotNull(result);
-            Assert.False(string.IsNullOrWhiteSpace(result.result));
+            Assert.False(string.IsNullOrEmpty(result.refnum));
+            Assert.Null(result.authcode);
+            Assert.Null(result.savedCard);
+            Assert.Equal("Error", result.result);
+            Assert.False(string.IsNullOrEmpty(result.error));
+
+            var result2 = await _transactionService.Charge(customer, invalidCardExpiration, true);
+            Assert.NotNull(result);
+            Assert.False(string.IsNullOrEmpty(result.refnum));
+            Assert.Null(result.authcode);
+            Assert.Null(result.savedCard);
+            Assert.Equal("Error", result.result);
+            Assert.False(string.IsNullOrEmpty(result.error));
         }
     }
 }

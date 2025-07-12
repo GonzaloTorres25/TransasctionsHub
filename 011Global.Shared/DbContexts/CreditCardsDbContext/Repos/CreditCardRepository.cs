@@ -1,8 +1,6 @@
 ﻿using _011Global.Shared.DbContexts.CreditCardsDbContext.Intefaces;
-using _011Global.Shared.DbContexts.CustomerDbContext;
 using _011Global.Shared.Exceptions;
 using _011Global.Shared.JobsServiceDBContext;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace _011Global.Shared.DbContexts.CreditCardsDbContext.Repos
@@ -46,7 +44,7 @@ namespace _011Global.Shared.DbContexts.CreditCardsDbContext.Repos
                     throw new NotFoundException($"Credit card with ID {creditCardId} not found.");
                 }
 
-                card.Token = token;
+                card.CreditCardNumber = token;
                 _context.Global_CreditCards.Update(card);
 
                 await _context.SaveChangesAsync();
@@ -56,11 +54,6 @@ namespace _011Global.Shared.DbContexts.CreditCardsDbContext.Repos
                 _logger.LogError(ex, "Error updating credit card token for ID {Id}", creditCardId);
                 throw new UpdateDBException("The credit card token could not be updated", ex);
             }
-        }
-
-        public async Task<List<CreditCard>> getAllCreditCards()
-        {
-            return await _context.Global_CreditCards.ToListAsync();
         }
     }
 }

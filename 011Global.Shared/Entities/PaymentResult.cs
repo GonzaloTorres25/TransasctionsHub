@@ -17,5 +17,7 @@ namespace _011Global.Shared.Entities
         public string result { get; set; }
         [JsonPropertyName("error")]
         public string? error { get; set; }
+        [JsonPropertyName("savedcard")]
+        public SavedCard? savedCard { get; set; }
     }
 }

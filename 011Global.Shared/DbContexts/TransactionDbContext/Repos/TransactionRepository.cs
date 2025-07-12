@@ -2,7 +2,6 @@
 using _011Global.Shared.Exceptions;
 using _011Global.Shared.JobsServiceDBContext;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Logging;
 
 namespace _011Global.Shared.DbContexts.TransactionDbContext.Repos
@@ -20,11 +19,6 @@ namespace _011Global.Shared.DbContexts.TransactionDbContext.Repos
         public async Task<Transaction?> GetLastVerificationRequiredTransactionByCustomerId(int customerId)
         {
             return await _context.Global_Transactions.Where(t => t.CustomerID == customerId).OrderByDescending(t => t.CreationDate).FirstOrDefaultAsync();
-        }
-
-        public Task<IDbContextTransaction> BeginTransactionAsync()
-        {
-            return _context.Database.BeginTransactionAsync();
         }
 
         public async Task SaveTransaction(Transaction transaction)

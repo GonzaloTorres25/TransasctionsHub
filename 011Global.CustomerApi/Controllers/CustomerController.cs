@@ -26,7 +26,7 @@ namespace _011Global.CustomerApi.Controllers
             return BadRequest(result);
         }
 
-        [HttpPost("unsubscribe/{customerId}")]
+        [HttpPost("unsubscribe/{email}")]
         public async Task<IActionResult> UnsubscribeCustomer(string email)
         {
             var result = await _unsubscritionService.UnsubscribeCustomer(email);

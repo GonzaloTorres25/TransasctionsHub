@@ -8,9 +8,6 @@ using _011Global.Shared.DbContexts.CustomerDbContext.Interfaces;
 using _011Global.Shared.DbContexts.CustomerDbContext.Repos;
 using _011Global.Shared.DbContexts.CreditCardsDbContext.Intefaces;
 using _011Global.Shared.DbContexts.CreditCardsDbContext.Repos;
-using _011Global.Shared.USAEpay.Services;
-using _011Global.Shared.USAEpay.Intefaces;
-using _011Global.JobsService.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,15 +23,6 @@ builder.Services.AddDbContext<JobsServiceContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-builder.Services.AddScoped<IAutorizationService, AutorizationService>();
-builder.Services.Configure<USAEpaySettings>(
-    builder.Configuration.GetSection("USAEpaySettings"));
-builder.Services.AddHttpClient<ITokenizationService, TokenizationService>(client =>
-{
-    client.BaseAddress = new Uri("https://sandbox.usaepay.com/api/v2/");
-});
-
-
 builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
 builder.Services.AddScoped<IUnsubscritionService, UnsubscriptionService>();
 
@@ -42,8 +30,6 @@ builder.Services.AddScoped<IUnsubscritionService, UnsubscriptionService>();
 builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
 builder.Services.AddScoped<IAddressRepository, AddressRepository>();
 builder.Services.AddScoped<ICreditCardRepository, CreditCardRepository>();
-
-
 
 
 var app = builder.Build();

@@ -26,7 +26,7 @@ namespace _011Global.CustomerApplication.Services
                 serviceresult.Message = $"Customer with email {email} not found";
             }else
             {
-                await _customerRepository.Unsubscribe(customer);
+                await _customerRepository.UnsubscribeCustomer(customer);
             }
             return serviceresult;
         }

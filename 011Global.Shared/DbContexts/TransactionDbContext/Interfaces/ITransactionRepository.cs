@@ -6,7 +6,5 @@ namespace _011Global.Shared.DbContexts.TransactionDbContext.Interfaces
     {
         Task<Transaction?> GetLastVerificationRequiredTransactionByCustomerId(int customerId);
         Task SaveTransaction(Transaction transaction);
-
-        Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

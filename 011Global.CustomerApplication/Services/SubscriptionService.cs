@@ -8,7 +8,6 @@ using _011Global.Shared.DbContexts.CreditCardsDbContext.Intefaces;
 using _011Global.Shared.DbContexts.CustomerDbContext;
 using _011Global.Shared.DbContexts.CustomerDbContext.Interfaces;
 using _011Global.Shared.Exceptions;
-using _011Global.Shared.USAEpay.Intefaces;
 using Microsoft.EntityFrameworkCore.Storage;
 
 namespace _011Global.CustomerApplication.Services
@@ -18,14 +17,12 @@ namespace _011Global.CustomerApplication.Services
         private readonly ICustomerRepository _customerRepository;
         private readonly IAddressRepository _addressRepository;
         private readonly ICreditCardRepository _creditCardRepository;
-        private readonly ITokenizationService _tokenizationService;
 
-        public SubscriptionService(ICustomerRepository customerRepository, IAddressRepository addressRepository, ICreditCardRepository creditCardRepository, ITokenizationService tokenizationService)
+        public SubscriptionService(ICustomerRepository customerRepository, IAddressRepository addressRepository, ICreditCardRepository creditCardRepository)
         {
             _customerRepository = customerRepository;
             _addressRepository = addressRepository;
             _creditCardRepository = creditCardRepository;
-            _tokenizationService = tokenizationService;
         }
 
         public async Task<ServiceResult> SubscribeCustomer(SubscribeRequest request)
@@ -50,11 +47,10 @@ namespace _011Global.CustomerApplication.Services
                 };
                 await _customerRepository.Add(customer);
 
-                var token = await _tokenizationService.TokenizationCard(request.CreditCard.CreditCardNumber, request.CreditCard.Expiration);
                 var card = new CreditCard
                 {
                     CustomerId = customer.CustomerId,
-                    Token = token,
+                    CreditCardNumber = request.CreditCard.CreditCardNumber,
                     LastFourNumbers = request.CreditCard.CreditCardNumber[^4..],
                     CardHolder = request.CreditCard.CardHolder,
                     ExpirationMonth = request.CreditCard.Expiration.Month.ToString("D2"),

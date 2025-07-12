@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
-using _011Global.JobsService.Entities;
 using _011Global.Shared.Entities;
 using _011Global.Shared.USAEpay.Intefaces;
 

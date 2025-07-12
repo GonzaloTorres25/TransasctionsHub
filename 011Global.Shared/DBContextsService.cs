@@ -24,21 +24,18 @@ namespace _011Global.Shared
             sqlServerOptions => sqlServerOptions.CommandTimeout(120).EnableRetryOnFailure()));
 
             _services.AddScoped<IJobsServiceRepository, JobsServiceRepository>();
-            _services.AddScoped<ICustomerRepository, CustomerRepository>();
             _services.AddScoped<ITransactionRepository, TransactionRepository>();
-            _services.AddScoped<ICreditCardRepository, CreditCardRepository>();
-            _services.AddScoped<ITokenizationService, TokenizationService>();
-            _services.AddHttpClient<ITokenizationService, TokenizationService>(client =>
-            {
-                client.BaseAddress = new Uri("https://sandbox.usaepay.com/api/v2/");
-            });
-
             _services.AddScoped<IAutorizationService, AutorizationService>();
+
+            _services.AddScoped<ICustomerRepository, CustomerRepository>();
+            _services.AddScoped<ICreditCardRepository, CreditCardRepository>();
 
             _services.AddHttpClient<ITransactionService, TransactionService>(client =>
             {
                 client.BaseAddress = new Uri("https://sandbox.usaepay.com/api/v2/");
             });
+
+
 
             return _services; 
 

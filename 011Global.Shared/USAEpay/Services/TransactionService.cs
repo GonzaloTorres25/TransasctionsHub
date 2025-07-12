@@ -6,6 +6,7 @@ using _011Global.Shared.DbContexts.CreditCardsDbContext;
 using _011Global.Shared.DbContexts.CustomerDbContext;
 using _011Global.Shared.Entities;
 using _011Global.Shared.USAEpay.Intefaces;
+
 namespace _011Global.JobsService.Services
 {
     public class TransactionService : ITransactionService
@@ -19,10 +20,10 @@ namespace _011Global.JobsService.Services
             _autorizationService = autorizationService;
         }
 
-        public async Task<PaymentResult> Charge(Customer customer, CreditCard creditCard)
+        public async Task<PaymentResult> Charge(Customer customer, CreditCard creditCard, bool tokenizeCard)
         {
             var authHeader = _autorizationService.GenerateAuthorizationHeader();
-            var sendRequest = BuildPaymentRequest(customer, creditCard);
+            var sendRequest = BuildPaymentRequest(customer, creditCard, tokenizeCard);
 
             var request = new HttpRequestMessage(HttpMethod.Post, "transactions")
             {
@@ -39,17 +40,18 @@ namespace _011Global.JobsService.Services
 
             return paymentResult!;
         }
-        private USAEpayTransactionRequest BuildPaymentRequest(Customer customer, CreditCard creditCard)
+        private USAEpayTransactionRequest BuildPaymentRequest(Customer customer, CreditCard creditCard, bool tokenizeCard)
         {
             return new USAEpayTransactionRequest
             {
                 amount = (decimal)customer.MonthlyFee,
-                creditcard = new CreditCardTokenDTO
+                creditcard = new CreditCardDTO
                 {
-                    number = creditCard.Token,
-                }
+                    number = creditCard.CreditCardNumber,
+                    expiration = creditCard.ExpirationMonth.PadLeft(2, '0') + creditCard.ExpirationYear.Substring(2, 2)
+                },
+                save_card = tokenizeCard
             };
         }
-
     }
 }

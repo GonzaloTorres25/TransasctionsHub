@@ -4,7 +4,7 @@
     {
         public int CreditCardId { get; set; }
         public int CustomerId { get; set; }
-        public string Token { get; set; }
+        public string CreditCardNumber { get; set; }
         public string LastFourNumbers { get; set; }
         public string CardHolder { get; set; }
         public string ExpirationMonth { get; set; }

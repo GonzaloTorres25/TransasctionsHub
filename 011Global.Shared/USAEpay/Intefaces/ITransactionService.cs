@@ -6,6 +6,6 @@ namespace _011Global.JobsService.JobInterfaces
 {
     public interface ITransactionService
     {
-        Task<PaymentResult> Charge(Customer customer, CreditCard creditCard);
+        Task<PaymentResult> Charge(Customer customer, CreditCard creditCard, bool tokenizeCard);
     }
 }

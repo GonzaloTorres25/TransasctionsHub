@@ -48,7 +48,14 @@ namespace _011Global.Shared.DbContexts.CustomerDbContext.Repos
             return await _context.Global_Customers.FirstOrDefaultAsync(c => c.CustomerEmail == email);
         }
 
-        public async Task Unsubscribe(Customer customer)
+        public async Task SubscribeCustomer(Customer customer)
+        {
+            customer.Subscribed = true;
+            _context.Global_Customers.Update(customer);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UnsubscribeCustomer(Customer customer)
         {
             customer.Subscribed = false;
             _context.Global_Customers.Update(customer);

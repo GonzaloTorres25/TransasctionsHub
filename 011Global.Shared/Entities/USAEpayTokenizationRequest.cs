@@ -1,6 +1,4 @@
-﻿using _011Global.JobsService.Entities;
-
-namespace _011Global.Shared.Entities
+﻿namespace _011Global.Shared.Entities
 {
     public class USAEpayTokenizationRequest
     {

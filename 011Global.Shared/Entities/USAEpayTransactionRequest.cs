@@ -6,6 +6,7 @@ namespace _011Global.JobsService.Entities
     {
         public string command { get; set; } = "sale";
         public decimal amount { get; set; }
-        public CreditCardTokenDTO creditcard { get; set; } =  new CreditCardTokenDTO();
+        public CreditCardDTO creditcard { get; set; } =  new CreditCardDTO();
+        public bool save_card { get; set; }
     }
 }
